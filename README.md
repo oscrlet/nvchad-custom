@@ -1,3 +1,3 @@
 # nvchad-custom
 
-nothing at now
+place the custom folder into your nvchad repository
