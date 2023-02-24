@@ -1,44 +1,71 @@
--- This is an example chadrc file , its supposed to be placed in /lua/custom/
-
+---@type ChadrcConfig
 local M = {}
 
--- make sure you maintain the structure of `core/default_config.lua` here,
--- example of changing theme:
+-- Path to overriding theme and highlights files
+local highlights = require "custom.highlights"
 
 M.ui = {
-  theme = "palenight",
-  hl_override = "custom.plugins.highlights",
-}
+  -- theme_toggle = { "onedark", "one_light" },
+  theme = "everforest",
+  hl_override = highlights.override,
+  hl_add = highlights.add,
 
--- plugins config
-local plugins = require "custom.plugins" -- path to table
-local plugin_conf = require "custom.plugins.configs" -- path to table
-
-M.plugins = {
-  install = plugins,
-
-  status = {
-    colorizer = true,
-    dashboard = true,
-    snippets = true,
+  -- cmp themeing
+  cmp = {
+    icons = true,
+    lspkind_text = true,
+    style = "atom_colored", -- default/flat_light/flat_dark/atom/atom_colored
+    border_color = "one_bg", -- only applicable for "default" style, use color names from base30 variables
+    selected_item_bg = "colored", -- colored / simple
   },
 
-  options = {
-    lspconfig = {
-      setup_lspconf = "custom.plugins.lspconfig",
+  statusline = {
+    theme = "default",
+    separator_style = "default", -- default/round/block/arrow
+    overriden_modules = function()
+      return require("custom.configs.statusline")
+    end,
+  },
+  -- lazyload it when there are 1+ buffers
+  tabufline = {
+    enabled = true,
+    lazyload = true,
+    overriden_modules = function()
+      return require("custom.configs.tabufline")
+    end,
+  },
+
+  nvdash = {
+    load_on_startup = true,
+
+    header = {
+      "                                ",
+      "        ███     ███         ",
+      "       ███   ███        ",
+      "      █████ █████       ",
+      "     ███ █████ ███      ",
+      "    ███   ███   ███     ",
+      "   ███     ███     ███    ",
+      "   ██      ██       ██    ",
+      "                          ",
+      "                                ",
+    },
+
+    buttons = {
+      { "  Open project", "Spc Tab", "Telescope projections" },
+      { "  Find File", "Spc f f", "Telescope find_files" },
+      { "  Recent Files", "Spc f o", "Telescope oldfiles" },
+      { "  Find Word", "Spc f w", "Telescope live_grep" },
+      { "  Bookmarks", "Spc b m", "Telescope marks" },
+      { "  Themes", "Spc t f", "Telescope themes" },
     },
   },
 
-  default_plugin_config_replace = {
-    nvim_treesitter = plugin_conf.treesitter,
-    nvim_tree = plugin_conf.nvimtree,
-    dashboard = plugin_conf.dashboard,
-    telescope = plugin_conf.telescope,
-  },
+  transparency = false,
 }
+M.plugins = require "custom.plugins"
 
--- NOTE: we heavily suggest using Packer's lazy loading (with the 'event','cmd' fields)
--- see: https://github.com/wbthomason/packer.nvim
--- https://nvchad.github.io/config/walkthrough
+-- check core.mappings for table structure
+M.mappings = require "custom.mappings"
 
 return M
